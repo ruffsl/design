@@ -235,7 +235,7 @@ The composition of multiple nodes per context however, inevitably means that cod
 This consequence of composition could unintendedly subvert the minimal spanning policy as architected by the policy designer or measured/generated via ROS 2 tooling/IDL.
 
 With the introduction of contexts, it becomes possible to describe the union of access control permission by defining a collection of SROS 2 policy profiles as element within a specific context.
-This would allow for formal analysis tooling to check for potential violations in information flow control given the composing of nodes at runtime.
+This would allow for formal analysis tooling [2] to check for potential violations in information flow control given the composing of nodes at runtime.
 However, should multiple contexts be used per process, then such security guaranties are again lost.
 Thus it should be asked whether if multiple contexts per process should even be supported.
 
@@ -256,4 +256,18 @@ Allowing for multiple contexts per process again exacerbates the same modeling i
 	doi       = {10.1109/IROS.2018.8594462},
 	issn      = {2153-0866},
 	url       = {https://arxiv.org/pdf/1810.08125.pdf}}
+```
+
+
+2. [Network Reconnaissance and Vulnerability Excavation of Secure DDS Systems](https://doi.org/10.1109/EuroSPW.2019.00013)
+
+``` bibtex
+@inproceedings{White2019,
+	title     = {Network Reconnaissance and Vulnerability Excavation of Secure DDS Systems},
+	author    = {White, Ruffin and Caiazza, Gianluca and Jiang, Chenxu and Ou, Xinyue and Yang, Zhiyue and Cortesi, Agostino and Christensen, Henrik},
+	year      = 2019,
+	booktitle = {2019 IEEE European Symposium on Security and Privacy Workshops (EuroS PW)},
+	doi       = {10.1109/EuroSPW.2019.00013},
+	pages     = {57-66},
+	url       = {https://arxiv.org/abs/1908.05310.pdf}}
 ```
