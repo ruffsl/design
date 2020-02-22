@@ -232,12 +232,16 @@ For circumstances where the context path is orthogonal to node namespace, the us
 Before the use of contexts, multiple nodes composed into a single process where each mapped to a separate participant.
 Each participant subsequently load an security identity and access control credential prevalent to its' respective node.
 The composition of multiple nodes per context however, inevitably means that code compiled to node `foo` could access credentials/permissions only trusted to node `bar`.
-This consequence of composition could unintendedly subvert the minimal spanning policy as architected by the designer or measured/generated via ROS 2 tooling/IDL.
+This consequence of composition could unintendedly subvert the minimal spanning policy as architected by the policy designer or measured/generated via ROS 2 tooling/IDL.
 
 With the introduction of contexts, it becomes possible to describe the union of access control permission by defining a collection of SROS 2 policy profiles as element within a specific context.
 This would allow for formal analysis tooling to check for potential violations in information flow control given the composing of nodes at runtime.
 However, should multiple contexts be used per process, then such security guaranties are again lost.
 Thus it should be asked whether if multiple contexts per process should even be supported.
+
+In summery, the distinction here is that before, the composition of multiple permissions could not be conveyed to the tooling.
+Whether nodes could gain the permission of others in the same process space is not the hinge point of note; it's the fact that such side effects could not be formally modeled or accounted for by the designer.
+Allowing for multiple contexts per process again exacerbates the same modeling inaccuracies
 
 ## References
 
