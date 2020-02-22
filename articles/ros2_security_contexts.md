@@ -34,7 +34,7 @@ Before detailing the SROS 2 integration of the contexts, the following concepts 
 
 Namespaces are a fundamental design pattern in ROS and are widely used to organize and differentiate many types of resources as to be uniquely identifiable; i.e. for topics, services, actions, and node names. As such, the concept of namespaceing is well know and understood by current users, as well as strongly supported with the existing tooling. Namespaces are often configurable at runtime via command line arguments or statically/programmatically via launch file declarations.
 
-Previously, the Fully Qualified Namespace (FQN) of a node was used directly by a selected security directory lookup strategy to load the necessary key material. However, with the advent of contexts, such a direct mapping of FQN to security artifacts may no longer suffice.
+Previously, the Fully Qualified Name (FQN) of a node was used directly by a selected security directory lookup strategy to load the necessary key material. However, with the advent of contexts, such a direct mapping of FQN to security artifacts may no longer suffice.
 
 ### Contexts
 
