@@ -230,5 +230,5 @@ With the introduction of contexts, it becomes possible to describe the union of 
 	booktitle = {2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
 	doi       = {10.1109/IROS.2018.8594462},
 	issn      = {2153-0866},
-	url       = {https://doi.org/10.1109/IROS.2018.8594462}}
+	url       = {https://arxiv.org/pdf/1810.08125.pdf}}
 ```
