@@ -32,20 +32,30 @@ Before detailing the SROS 2 integration of the contexts, the following concepts 
 
 ### Namespaces
 
-Namespaces are a fundamental design pattern in ROS and are widely used to organize and differentiate many types of resources as to be uniquely identifiable; i.e. for topics, services, actions, and node names. As such, the concept of namespaceing is well know and understood by current users, as well as strongly supported with the existing tooling. Namespaces are often configurable at runtime via command line arguments or statically/programmatically via launch file declarations.
+Namespaces are a fundamental design pattern in ROS and are widely used to organize and differentiate many types of resources as to be uniquely identifiable; i.e. for topics, services, actions, and node names.
+As such, the concept of namespaceing is well know and understood by current users, as well as strongly supported with the existing tooling.
+Namespaces are often configurable at runtime via command line arguments or statically/programmatically via launch file declarations.
 
-Previously, the Fully Qualified Name (FQN) of a node was used directly by a selected security directory lookup strategy to load the necessary key material. However, with the advent of contexts, such a direct mapping of FQN to security artifacts may no longer suffice.
+Previously, the Fully Qualified Name (FQN) of a node was used directly by a selected security directory lookup strategy to load the necessary key material.
+However, with the advent of contexts, such a direct mapping of FQN to security artifacts may no longer suffice.
 
 ### Contexts
 
-With the advent of ROS 2, multiple nodes may now be composed into one process for improved performance. Previously however, each node would retain it's one to one mapping to a separate middleware participant. Given the non-negligible overhead incurred of multiple participants per process, a concept of contexts was introduced. Contexts permit a many-to-one mapping of nodes to participant by grouping many nodes per context, and one participant per context.
+With the advent of ROS 2, multiple nodes may now be composed into one process for improved performance.
+Previously however, each node would retain it's one to one mapping to a separate middleware participant.
+Given the non-negligible overhead incurred of multiple participants per process, a concept of contexts was introduced.
+Contexts permit a many-to-one mapping of nodes to participant by grouping many nodes per context, and one participant per context.
 
-Currently, DDS participants can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts. As such, additional tooling and extensions to SROS 2 are necessary to support this new paradigm.
+Currently, DDS participants can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts.
+As such, additional tooling and extensions to SROS 2 are necessary to support this new paradigm.
 
 
 ## Keystore
 
-With the additional structure of contexts, it’s perhaps best to take the opportunity to restructure the keystore layout as well. Rather than a flat directory of namespaced node security directories, we can push all such security directories down into a designated `contexts` sub-folder. Similarly, private and public keystore materials can also be pushed down into their own respective sub-folders within the root keystore directory. This is reminiscent of the pattern used earlier Keymint [1].
+With the additional structure of contexts, it’s perhaps best to take the opportunity to restructure the keystore layout as well.
+Rather than a flat directory of namespaced node security directories, we can push all such security directories down into a designated `contexts` sub-folder.
+Similarly, private and public keystore materials can also be pushed down into their own respective sub-folders within the root keystore directory.
+This is reminiscent of the pattern used earlier Keymint [1].
 
 
 ```
@@ -66,15 +76,19 @@ keystore
 
 ### `public`
 
-The `public` directory contains anything permissable as public, such as public certificates for the identity or permissions certificate authorities. As such, this can be given read access to all executables. Note that in the default case, both the identity_ca and permissions_ca points to the same CA certificate.
+The `public` directory contains anything permissable as public, such as public certificates for the identity or permissions certificate authorities.
+As such, this can be given read access to all executables.
+Note that in the default case, both the identity_ca and permissions_ca points to the same CA certificate.
 
 ### `private`
 
-The `private` directory contains anything permissable as private, such as private key material for aforementioned certificate authorities. This directory should be redacted before deploying the keystore onto the target device/robot.
+The `private` directory contains anything permissable as private, such as private key material for aforementioned certificate authorities.
+This directory should be redacted before deploying the keystore onto the target device/robot.
 
 ### `contexts`
 
-The `contexts` directory contains the security artifacts associated with individual contexts, and thus node directories are no longer relevant. Similar to node directories however, the `contexts` folder may still recursively nest sub-paths for organizing separate contexts.
+The `contexts` directory contains the security artifacts associated with individual contexts, and thus node directories are no longer relevant.
+Similar to node directories however, the `contexts` folder may still recursively nest sub-paths for organizing separate contexts.
 
 
 ## Runtime
@@ -192,7 +206,8 @@ contexts/
 
 ### Context path orthogonal to namespace
 
-An alternative to reusing namespaces to hint the context path could be to completely disassociate the two entirely, treating the context path as it's own unique identifier. However, having to book keep both identifier spaces simulations may introduce to many degrees of freedom that a human could groc or easily introspect via tooling.
+An alternative to reusing namespaces to hint the context path could be to completely disassociate the two entirely, treating the context path as it's own unique identifier.
+However, having to book keep both identifier spaces simulations may introduce to many degrees of freedom that a human could groc or easily introspect via tooling.
 
 #### `<push_ros_namespace namespace="..." context="foo"/>`
 
@@ -209,7 +224,8 @@ Keeps pushing context path independent/flexable from namespaces.
 
 ### Multiple namespaces per context
 
-For circumstances where users may compose multiple nodes of dissimilar namespaces into a single context, the user must subsequently specify a common fully qualified context path for each node to compose, as the varying different namespaces would not push to a common context. For circumstances where the context path is orthogonal to node namespace, the use of fully qualifying all relevant nodes is could be tedious, but could perhaps could still be parametrized via the use of `<var/>`, and `<arg/>` substation and expansion.
+For circumstances where users may compose multiple nodes of dissimilar namespaces into a single context, the user must subsequently specify a common fully qualified context path for each node to compose, as the varying different namespaces would not push to a common context.
+For circumstances where the context path is orthogonal to node namespace, the use of fully qualifying all relevant nodes is could be tedious, but could perhaps could still be parametrized via the use of `<var/>`, and `<arg/>` substation and expansion.
 
 
 ### Multiple contexts per process
@@ -219,7 +235,10 @@ Each participant subsequently load an security identity and access control crede
 The composition of multiple nodes per context however, inevitably means that code compiled to node `foo` could access credentials/permissions only trusted to node `bar`.
 This consequence of composition could unintendedly subvert the minimal spanning policy as architected by the designer or measured/generated via ROS 2 tooling/IDL.
 
-With the introduction of contexts, it becomes possible to describe the union of access control permission by defining a collection of SROS 2 policy profiles as element within a specific context. This would allow for formal analysis tooling to check for potential violations in information flow control given the composing of nodes at runtime. However, should multiple contexts be used per process, then such security guaranties are again lost. Thus it should be asked whether if multiple contexts per process should even be supported.
+With the introduction of contexts, it becomes possible to describe the union of access control permission by defining a collection of SROS 2 policy profiles as element within a specific context.
+This would allow for formal analysis tooling to check for potential violations in information flow control given the composing of nodes at runtime.
+However, should multiple contexts be used per process, then such security guaranties are again lost.
+Thus it should be asked whether if multiple contexts per process should even be supported.
 
 ## References
 
