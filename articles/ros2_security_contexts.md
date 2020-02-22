@@ -214,7 +214,10 @@ For circumstances where users may compose multiple nodes of dissimilar namespace
 
 ### Multiple contexts per process
 
-As before the use of contexts, multiple nodes composed into a single process where each mapped to a septate participant. Each participant subsequently load an security identity and access control credential prevalent to it's respective node. This composition however would inevitably mean that code compiled to node `foo` could access credentials/permissions only trusted only to node `bar`. This consequence of composition could unintendedly subvert the minimal spanning policy as architected by the designer or measured/generated via ROS 2 tooling/IDL.
+Before the use of contexts, multiple nodes composed into a single process where each mapped to a separate participant.
+Each participant subsequently load an security identity and access control credential prevalent to its' respective node.
+The composition of multiple nodes per context however, inevitably means that code compiled to node `foo` could access credentials/permissions only trusted to node `bar`.
+This consequence of composition could unintendedly subvert the minimal spanning policy as architected by the designer or measured/generated via ROS 2 tooling/IDL.
 
 With the introduction of contexts, it becomes possible to describe the union of access control permission by defining a collection of SROS 2 policy profiles as element within a specific context. This would allow for formal analysis tooling to check for potential violations in information flow control given the composing of nodes at runtime. However, should multiple contexts be used per process, then such security guaranties are again lost. Thus it should be asked whether if multiple contexts per process should even be supported.
 
