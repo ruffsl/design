@@ -68,7 +68,7 @@ keystore
 
 The `public` directory contains anything permissable as public, such as public certificates for the identity or permissions certificate authorities. As such, this can be given read access to all executables. Note that in the default case, both the identity_ca and permissions_ca points to the same CA certificate.
 
-### `public`
+### `private`
 
 The `private` directory contains anything permissable as private, such as private key material for aforementioned certificate authorities. This directory should be redacted before deploying the keystore onto the target device/robot.
 
