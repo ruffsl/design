@@ -46,7 +46,7 @@ Previously however, each node would retain it's one to one mapping to a separate
 Given the non-negligible overhead incurred of multiple participants per process, a concept of contexts was introduced.
 Contexts permit a many-to-one mapping of nodes to participant by grouping many nodes per context, and one participant per context.
 
-Currently, DDS participants can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts.
+Based on the DDS Security specification v1.1, participants can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts.
 As such, additional tooling and extensions to SROS 2 are necessary to support this new paradigm.
 
 
