@@ -38,7 +38,7 @@ Previously, the Fully Qualified Name (FQN) of a node was used directly by a sele
 
 ### Contexts
 
-With the advent of ROS 2, multiple nodes may now be composed into one process for improved performance. Previously however, each node would retain it's one to one mapping to a septate middleware participant. Given the non-negligible overhead incurred of multiple participants per process, a concept of contexts was introduced. Contexts permit a many-to-one mapping of nodes to participant by grouping many nodes per context, and one context per participant.
+With the advent of ROS 2, multiple nodes may now be composed into one process for improved performance. Previously however, each node would retain it's one to one mapping to a separate middleware participant. Given the non-negligible overhead incurred of multiple participants per process, a concept of contexts was introduced. Contexts permit a many-to-one mapping of nodes to participant by grouping many nodes per context, and one participant per context.
 
 Currently, DDS participants can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts. As such, additional tooling and extensions to SROS 2 are necessary to support this new paradigm.
 
