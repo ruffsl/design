@@ -1,7 +1,7 @@
 ---
 layout: default
 title: ROS 2 Security Contexts
-permalink: articles/ros2_access_control_policies.html
+permalink: articles/ros2_security_contexts.html
 abstract:
   This article specifies the integration between security and contexts.
 author:  >
@@ -30,6 +30,10 @@ TODO: Some concise overview introduction here
 
 Before detailing the SROS 2 integration of the contexts, the following concepts are introduced.
 
+### Participant
+
+Participant is the object representing a single entity on the network, in the case of DDS the ``Participant`` is a DDS DomainParticipant and the object to which a set of access control and security identity apply.
+
 ### Namespaces
 
 Namespaces are a fundamental design pattern in ROS and are widely used to organize and differentiate many types of resources as to be uniquely identifiable; i.e. for topics, services, actions, and node names.
@@ -42,11 +46,11 @@ However, with the advent of contexts, such a direct mapping of FQN to security a
 ### Contexts
 
 With the advent of ROS 2, multiple nodes may now be composed into one process for improved performance.
-Previously however, each node would retain it's one to one mapping to a separate middleware participant.
-Given the non-negligible overhead incurred of multiple participants per process, a concept of contexts was introduced.
-Contexts permit a many-to-one mapping of nodes to participant by grouping many nodes per context, and one participant per context.
+Previously however, each node would retain it's one to one mapping to a separate middleware ``Participant``.
+Given the non-negligible overhead incurred of multiple ``Participant``s per process, a concept of contexts was introduced.
+Contexts permit a many-to-one mapping of nodes to ``Participant`` by grouping many nodes per context, and one ``Participant`` per context.
 
-Based on the DDS Security specification v1.1, participants can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts.
+Based on the DDS Security specification v1.1, a ``Participant`` can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts.
 As such, additional tooling and extensions to SROS 2 are necessary to support this new paradigm.
 
 
@@ -74,20 +78,20 @@ keystore
 ```
 
 
-### `public`
+### ``public``
 
-The `public` directory contains anything permissable as public, such as public certificates for the identity or permissions certificate authorities.
+The ``public`` directory contains anything permissable as public, such as public certificates for the identity or permissions certificate authorities.
 As such, this can be given read access to all executables.
-Note that in the default case, both the identity_ca and permissions_ca are the same CA certificate.
+Note that in the default case, both the `identity_ca` and `permissions_ca` are the same CA certificate.
 
-### `private`
+### ``private``
 
-The `private` directory contains anything permissable as private, such as private key material for aforementioned certificate authorities.
+The ``private`` directory contains anything permissable as private, such as private key material for aforementioned certificate authorities.
 This directory should be redacted before deploying the keystore onto the target device/robot.
 
-### `contexts`
+### ``contexts``
 
-The `contexts` directory contains the security artifacts associated with individual contexts, and thus node directories are no longer relevant.
+The ``contexts`` directory contains the security artifacts associated with individual contexts, and thus node directories are no longer relevant.
 Similar to node directories however, the `contexts` folder may still recursively nest sub-paths for organizing separate contexts.
 
 
@@ -177,7 +181,7 @@ contexts/
 
 ### Fully qualified context path
 
-For nodes with fully qualified context paths, namespacs do not subsequently push the relative sub-folder.
+For nodes with absolute context paths, namespaces do not subsequently push the relative sub-folder.
 
 ``` xml
 <launch>
@@ -224,24 +228,31 @@ Keeps pushing context path independent/flexable from namespaces.
 ### Multiple namespaces per context
 
 For circumstances where users may compose multiple nodes of dissimilar namespaces into a single context, the user must subsequently specify a common fully qualified context path for each node to compose, as the varying different namespaces would not push to a common context.
-For circumstances where the context path is orthogonal to node namespace, the use of fully qualifying all relevant nodes is could be tedious, but could perhaps could still be parametrized via the use of `<var/>`, and `<arg/>` substation and expansion.
+For circumstances where the context path is orthogonal to node namespace, the use of fully qualifying all relevant nodes is could be tedious, but could perhaps could still be parametrized via the use of `<var/>`, and `<arg/>` substitution and expansion.
 
 
-### Multiple contexts per process
+### Modeling permissions of nodes in a process v.s. permission of the middleware ``Participant``
 
-Before the use of contexts, multiple nodes composed into a single process where each mapped to a separate participant.
-Each participant subsequently load an security identity and access control credential prevalent to its' respective node.
-The composition of multiple nodes per context however, inevitably means that code compiled to node `foo` could access credentials/permissions only trusted to node `bar`.
+Before the use of contexts, multiple nodes composed into a single process where each mapped to a separate ``Participant``.
+Each ``Participant`` subsequently load a security identity and access control credential prevalent to its' respective node.
+However, all nodes in that process share the same memory space and can thus access data from other nodes.
+There is a mismatch between the middleware credentials/permissions loaded and the resources accessible within the process.
+
+By using contexts, all nodes in a context share the same security identity and access control credentials.
+This inevitably means that code compiled to node ``foo`` can access credentials/permissions only trusted to node ``bar``.
 This consequence of composition could unintendedly subvert the minimal spanning policy as architected by the policy designer or measured/generated via ROS 2 tooling/IDL.
 
 With the introduction of contexts, it becomes possible to describe the union of access control permission by defining a collection of SROS 2 policy profiles as element within a specific context.
 This would allow for formal analysis tooling [2] to check for potential violations in information flow control given the composing of nodes at runtime.
-However, should multiple contexts be used per process, then such security guaranties are again lost.
+If a process contains a single context, this reconciles the permissions of a ``Participant`` and the ones of the process.
+
+However, should multiple contexts be used per process, then such security guaranties are again lost because both contexts will share the same memory space.
 Thus it should be asked whether if multiple contexts per process should even be supported.
 
-In summery, the distinction here is that before, the composition of multiple permissions could not be conveyed to the tooling.
+
+In summary, the distinction here is that before, the composition of multiple permissions could not be conveyed to the tooling.
 Whether nodes could gain the permission of others in the same process space is not the hinge point of note; it's the fact that such side effects could not be formally modeled or accounted for by the designer.
-Allowing for multiple contexts per process again exacerbates the same modeling inaccuracies
+It will now be possible with contexts, however allowing for multiple contexts per process will reintroduce and exacerbates the same modeling inaccuracies.
 
 ## References
 
