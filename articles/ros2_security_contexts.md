@@ -30,6 +30,10 @@ TODO: Some concise overview introduction here
 
 Before detailing the SROS 2 integration of the contexts, the following concepts are introduced.
 
+### Participant
+
+Participant is the object representing a single entity on the network, in the case of DDS the ``Participant`` is a DDS DomainParticipant and the object to which a set of access control and security identity apply.
+
 ### Namespaces
 
 Namespaces are a fundamental design pattern in ROS and are widely used to organize and differentiate many types of resources as to be uniquely identifiable; i.e. for topics, services, actions, and node names.
@@ -42,11 +46,11 @@ However, with the advent of contexts, such a direct mapping of FQN to security a
 ### Contexts
 
 With the advent of ROS 2, multiple nodes may now be composed into one process for improved performance.
-Previously however, each node would retain it's one to one mapping to a separate middleware participant.
-Given the non-negligible overhead incurred of multiple participants per process, a concept of contexts was introduced.
-Contexts permit a many-to-one mapping of nodes to participant by grouping many nodes per context, and one participant per context.
+Previously however, each node would retain it's one to one mapping to a separate middleware ``Participant``.
+Given the non-negligible overhead incurred of multiple ``Participant``s per process, a concept of contexts was introduced.
+Contexts permit a many-to-one mapping of nodes to ``Participant`` by grouping many nodes per context, and one ``Participant`` per context.
 
-Based on the DDS Security specification v1.1, participants can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts.
+Based on the DDS Security specification v1.1, a ``Participant`` can only utilise a single security identity; consequently the access control permissions applicable to every node mapped to a given context must be consolidated and combined into a single set of security artifacts.
 As such, additional tooling and extensions to SROS 2 are necessary to support this new paradigm.
 
 
@@ -74,20 +78,20 @@ keystore
 ```
 
 
-### `public`
+### ``public``
 
-The `public` directory contains anything permissable as public, such as public certificates for the identity or permissions certificate authorities.
+The ``public`` directory contains anything permissable as public, such as public certificates for the identity or permissions certificate authorities.
 As such, this can be given read access to all executables.
-Note that in the default case, both the identity_ca and permissions_ca are the same CA certificate.
+Note that in the default case, both the `identity_ca` and `permissions_ca` are the same CA certificate.
 
-### `private`
+### ``private``
 
-The `private` directory contains anything permissable as private, such as private key material for aforementioned certificate authorities.
+The ``private`` directory contains anything permissable as private, such as private key material for aforementioned certificate authorities.
 This directory should be redacted before deploying the keystore onto the target device/robot.
 
-### `contexts`
+### ``contexts``
 
-The `contexts` directory contains the security artifacts associated with individual contexts, and thus node directories are no longer relevant.
+The ``contexts`` directory contains the security artifacts associated with individual contexts, and thus node directories are no longer relevant.
 Similar to node directories however, the `contexts` folder may still recursively nest sub-paths for organizing separate contexts.
 
 
