@@ -228,7 +228,7 @@ Keeps pushing context path independent/flexable from namespaces.
 ### Multiple namespaces per context
 
 For circumstances where users may compose multiple nodes of dissimilar namespaces into a single context, the user must subsequently specify a common fully qualified context path for each node to compose, as the varying different namespaces would not push to a common context.
-For circumstances where the context path is orthogonal to node namespace, the use of fully qualifying all relevant nodes is could be tedious, but could perhaps could still be parametrized via the use of `<var/>`, and `<arg/>` substation and expansion.
+For circumstances where the context path is orthogonal to node namespace, the use of fully qualifying all relevant nodes is could be tedious, but could perhaps could still be parametrized via the use of `<var/>`, and `<arg/>` substitution and expansion.
 
 
 ### Multiple contexts per process
