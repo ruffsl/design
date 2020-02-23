@@ -1,7 +1,7 @@
 ---
 layout: default
 title: ROS 2 Security Contexts
-permalink: articles/ros2_access_control_policies.html
+permalink: articles/ros2_security_contexts.html
 abstract:
   This article specifies the integration between security and contexts.
 author:  >
