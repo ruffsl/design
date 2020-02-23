@@ -181,7 +181,7 @@ contexts/
 
 ### Fully qualified context path
 
-For nodes with fully qualified context paths, namespacs do not subsequently push the relative sub-folder.
+For nodes with absolute context paths, namespaces do not subsequently push the relative sub-folder.
 
 ``` xml
 <launch>
