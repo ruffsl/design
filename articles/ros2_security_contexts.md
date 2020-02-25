@@ -271,6 +271,12 @@ Given that containers can be dynamic, where nodes can be added or removed at run
 The most straightforward approach is perhaps only specifying the context wherever the container is first defined/launched, applying to the container participant, thus to all nodes/components inside that container.
 This should be further deliberated when eventually extending the launch API for containers.
 
+### Migration for RMW implementations
+
+As it may take time before all RMW implementations implement the new system of contexts, a defined fallback behavior should still be designated.
+For such implementations, the context security directory determined by RCL should be loaded for the participant as per the priority of context setting specified in the "ROS 2 DDS-Security integration" design doc.
+This primarily desists the use of including the node name in the default lookup path, consequently getting users in the habit of creating separate contexts for separate processes, or explicitly specifying unique context names via launchfiles.
+
 ## References
 
 1. [Procedurally Provisioned Access Control for Robotic Systems](https://doi.org/10.1109/IROS.2018.8594462)
