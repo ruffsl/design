@@ -254,6 +254,23 @@ In summary, the distinction here is that before, the composition of multiple per
 Whether nodes could gain the permission of others in the same process space is not the hinge point of note; it's the fact that such side effects could not be formally modeled or accounted for by the designer.
 It will now be possible with contexts, however allowing for multiple contexts per process will reintroduce and exacerbates the same modeling inaccuracies.
 
+### Composable launchfile includes
+
+A particular challenge in using launchfiles with security contexts is that of keeping the include hierarchy composable.
+An inherit tradeoff between simplicity and configurability can arise when writing launchfiles for downstream use.
+Authors can selectively choose what attributes to expose as input arguments, while users may implicitly override provided defaults.
+
+In case of contexts, it is not inherently clear what best practices either package authors or users should employ to retain a composable and intuitive launchfile structure. E.g:
+Should authors parametrize context paths for each node as input arguments?
+Should users push namespaces of included launchfiles to separate contexts?
+Should the setting of security environment variables be discouraged from within launchfiles, limiting the use of simple static analysis of launchfiles combined with Node IDL for procedural context generation?
+
+### Composable nodes in container
+
+Given that containers can be dynamic, where nodes can be added or removed at runtime, there is perhaps some question as to how containers should integrate with secure contexts.
+The most straightforward approach is perhaps only specifying the context wherever the container is first defined/launched, applying to the container participant, thus to all nodes/components inside that container.
+This should be further deliberated when eventually extending the launch API for containers.
+
 ## References
 
 1. [Procedurally Provisioned Access Control for Robotic Systems](https://doi.org/10.1109/IROS.2018.8594462)
